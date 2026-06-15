@@ -157,10 +157,7 @@ function processChantStep() {
 
     switch(step) {
         case 0: 
-            // 【修正の核心】
-            // 処理が始まった瞬間に、その時点での currentVocab を確定させる
-            const currentVocab = currentPlaylist[wordIndex]; 
-            
+            // 処理本体は156行目に移動（関数の冒頭で定義済み）
             targetString = currentVocab.word;
             typedIndex = 0;
             isCurrentWordCleared = false;
