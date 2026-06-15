@@ -276,11 +276,16 @@ function switchCategory(categoryTag, element) {
     document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
     if(element) element.classList.add('active');
     activeCategory = categoryTag;
-    
+
+    // 1. リストを生成・シャッフル
     applyFilterAndShuffle();
+
+    // 2. 【最重要】インデックスを初期化する
     wordIndex = 0;
     step = 0;
     
+
+    // 3. 画面やUIの更新
     if(wordDisplay && meaningDisplay) {
         if(categoryTag === 'revenge') {
             wordDisplay.innerHTML = "🎯 REVENGE!";
