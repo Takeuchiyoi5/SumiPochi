@@ -157,18 +157,27 @@ function processChantStep() {
 
     switch(step) {
         case 0: 
+            // 【修正の核心】
+            // 処理が始まった瞬間に、その時点での currentVocab を確定させる
+            const currentVocab = currentPlaylist[wordIndex]; 
+            
             targetString = currentVocab.word;
             typedIndex = 0;
             isCurrentWordCleared = false;
             hasError = false; 
             
+            // 表示と音声を、この確定した currentVocab で統一する
             checkAndSkipNonAlpha();
-            renderTypingWord();
+            renderTypingWord(); // 画面を更新
+            
             if (meaningDisplay) meaningDisplay.innerText = "---";
             
+            // 音声を再生
             speak(cleanTextForTTS(currentVocab.word, currentVocab.meaning), 'en-US');
+            
             step = 1;
             break;
+            
         case 1: 
             if (meaningDisplay) meaningDisplay.innerText = currentVocab.meaning;
             
