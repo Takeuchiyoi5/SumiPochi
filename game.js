@@ -233,7 +233,14 @@ function processChantStep() {
 
             // 3. 次の問題へ即座に自動遷移させる
             step = 0; 
-            // resetBeatTimer(); // タイマーをリセットすると次のprocessChantStepで動き出します
+            // 【重要：ここを追加】
+            // 古いタイマーを完全に停止させ、次の問題のタイミングでタイマーを再生成させる
+            if (timerId) {
+                clearInterval(timerId);
+                timerId = null;
+            }            
+            // 次の問題へ進む
+
             processChantStep(); 
             break;
     }
@@ -270,14 +277,14 @@ function handleTypingInput(e) {
                 isCurrentWordCleared = true;
                 playWordCompleteSound(); 
                 if (step >= 2) renderTypingWord();
-
-                // ★ここで「自動的に次へ進む」処理をキックします
-                // 0.5秒の余韻を残して、自動で processChantStep() を呼び出します
+                // ★修正：ステップを 3 に確定させてから遷移を予約
+                step = 3; 
                 setTimeout(() => {
                     if (isPlaying) {
                         processChantStep();
                     }
                 }, 500); 
+                          
             } else {
                 playKeySuccessSound();   
             }
