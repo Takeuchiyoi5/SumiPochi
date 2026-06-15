@@ -167,6 +167,7 @@ function processChantStep() {
             checkAndSkipNonAlpha();
             renderTypingWord(); // 画面を更新
             
+            // 【重要】明示的にリセットし、次のステップの準備をする
             if (meaningDisplay) meaningDisplay.innerText = "---";
             
             // 音声を再生
@@ -176,25 +177,30 @@ function processChantStep() {
             break;
             
         case 1: 
-            if (meaningDisplay) meaningDisplay.innerText = currentVocab.meaning;
-            
-            let cleanJapanese = currentVocab.meaning
-                .replace(/（[^）]*）/g, '')  
-                .replace(/\([^)]*\)/g, '')   
-                .trim();                     
-            
-            // ★音声バグ修正：「来る」の漢字が入っていたら「くる」に置換して誤読を防止する
-            if (cleanJapanese.includes('来る')) {
-                cleanJapanese = cleanJapanese.replace(/来る/g, 'くる');
-            }
-
-            if (cleanJapanese.includes('間')) {
-                cleanJapanese = cleanJapanese.replace(/間/g, 'あいだ');
-            }
+            // if文を {} で囲むことで、この中の処理がすべて case 1 用であることを明示
+            if (meaningDisplay) {
+                meaningDisplay.innerText = currentVocab.meaning;
                 
-            speak(cleanJapanese, 'ja-JP');
+                let cleanJapanese = currentVocab.meaning
+                    .replace(/（[^）]*）/g, '')  
+                    .replace(/\([^)]*\)/g, '')   
+                    .trim();                    
+                
+                // ★音声バグ修正：「来る」の漢字が入っていたら「くる」に置換して誤読を防止する
+                if (cleanJapanese.includes('来る')) {
+                    cleanJapanese = cleanJapanese.replace(/来る/g, 'くる');
+                }
+
+                if (cleanJapanese.includes('間')) {
+                    cleanJapanese = cleanJapanese.replace(/間/g, 'あいだ');
+                }
+                    
+                speak(cleanJapanese, 'ja-JP');
+            }
+            
             step = 2;
             break;
+            
         case 2: 
             speak(cleanTextForTTS(currentVocab.word, currentVocab.meaning), 'en-US');
             step = 3; 
