@@ -141,49 +141,44 @@ function checkAndSkipNonAlpha() {
 }
 
 function processChantStep() {
-    // 【重要】ここで直前の音声を強制キャンセルする
-    window.speechSynthesis.cancel();
-    
-    // 【ガード節】もし停止中なら処理を絶対に実行させない
+    window.speechSynthesis.cancel(); // 読み上げリセット
+
     if (!isPlaying || isPaused) {
         if (timerId) clearInterval(timerId);
         return;
     }
 
-    // 範囲チェック（ここでもフリーズを防御）
     if (wordIndex >= currentPlaylist.length) {
-        console.warn("インデックスが範囲外です。リセットします。");
         wordIndex = 0; 
     }    
+
+    const currentVocab = currentPlaylist[wordIndex];
+    console.log("現在ステップ:", step, "単語:", currentVocab.word); // どこで止まるか確認  
 
     const currentVocab = currentPlaylist[wordIndex];
 
     switch(step) {
         case 0: 
-            // 処理本体は156行目に移動（関数の冒頭で定義済み）
+            console.log("ケース0実行中");
             targetString = currentVocab.word;
             typedIndex = 0;
             isCurrentWordCleared = false;
             hasError = false; 
             
-            // 表示と音声を、この確定した currentVocab で統一する
             checkAndSkipNonAlpha();
-            renderTypingWord(); // 画面を更新
-            
-            // 【重要】明示的にリセットし、次のステップの準備をする
+            renderTypingWord();
             if (meaningDisplay) meaningDisplay.innerText = "---";
             
-            // 音声を再生
             speak(cleanTextForTTS(currentVocab.word, currentVocab.meaning), 'en-US');
             
             step = 1;
             break;
             
         case 1: 
-            console.log("ステップ1に到達しました。翻訳を表示・読み上げします。"); // これを追加
-           　// if文を {} で囲むことで、この中の処理がすべて case 1 用であることを明示
+            console.log("ケース1実行中！"); // ここが重要
             if (meaningDisplay) {
                 meaningDisplay.innerText = currentVocab.meaning;
+                console.log("表示設定完了:", currentVocab.meaning); // 表示設定の確認
                 
                 let cleanJapanese = currentVocab.meaning
                     .replace(/（[^）]*）/g, '')  
@@ -205,7 +200,8 @@ function processChantStep() {
             step = 2;
             break;
             
-        case 2: 
+        case 2:
+            console.log("ケース2実行中");
             speak(cleanTextForTTS(currentVocab.word, currentVocab.meaning), 'en-US');
             step = 3; 
             if (timerId) clearInterval(timerId); 
@@ -213,6 +209,7 @@ function processChantStep() {
             break;
             
         case 3:
+            console.log("ケース3実行中");
             // 1. 正解・不正解の判定処理（ここは既存のままでOK）
             if (isCurrentWordCleared) {
                 gameScore += 10 + Math.floor(gameCombo / 5);
