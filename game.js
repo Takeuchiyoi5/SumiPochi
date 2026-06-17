@@ -250,10 +250,16 @@ function processChantStep() {
             if (timerId) {
                 clearInterval(timerId);
                 timerId = null;
-            }            
-            // 次の問題へ進む
+            }   
 
-            processChantStep(); 
+            // ★ここを修正：直接 processChantStep() を呼ぶと処理が早すぎて
+            // 音声や表示のバグを誘発するため、少し間を置いてから実行します
+            setTimeout(() => {
+                if (isPlaying && !isPaused) {
+                    processChantStep();
+                }
+            }, 600); // 0.6秒の猶予を持たせる
+
             break;
     }
 }
@@ -292,12 +298,13 @@ function handleTypingInput(e) {
                 // ★修正：ステップを 3 に確定させてから遷移を予約
                 step = 3; 
                 setTimeout(() => {
-                    if (isPlaying) {
+                    if (isPlaying && !isPaused) {
                         processChantStep();
                     }
-                }, 500); 
+                }, 600); 
                           
-            } else {
+            } 
+            else {
                 playKeySuccessSound();   
             }
         } 
