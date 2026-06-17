@@ -155,8 +155,6 @@ function processChantStep() {
     const currentVocab = currentPlaylist[wordIndex];
     console.log("現在ステップ:", step, "単語:", currentVocab.word); // どこで止まるか確認  
 
-    const currentVocab = currentPlaylist[wordIndex];
-
     switch(step) {
         case 0: 
             console.log("ケース0実行中");
