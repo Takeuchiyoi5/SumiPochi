@@ -141,6 +141,7 @@ function checkAndSkipNonAlpha() {
 }
 
 function processChantStep() {
+    console.log("processChantStep が動いています。ステップ:", step);
     window.speechSynthesis.cancel(); // 読み上げリセット
 
     if (!isPlaying || isPaused) {
@@ -152,8 +153,9 @@ function processChantStep() {
         wordIndex = 0; 
     }    
 
+    // ★ここを1つだけに修正：
     const currentVocab = currentPlaylist[wordIndex];
-    console.log("現在ステップ:", step, "単語:", currentVocab.word); // どこで止まるか確認  
+    console.log("現在ステップ:", step, "単語:", currentVocab.word);  
 
     switch(step) {
         case 0: 
