@@ -141,6 +141,9 @@ function checkAndSkipNonAlpha() {
 }
 
 function processChantStep() {
+    // 【重要】ここで直前の音声を強制キャンセルする
+    window.speechSynthesis.cancel();
+    
     // 【ガード節】もし停止中なら処理を絶対に実行させない
     if (!isPlaying || isPaused) {
         if (timerId) clearInterval(timerId);
@@ -177,7 +180,8 @@ function processChantStep() {
             break;
             
         case 1: 
-            // if文を {} で囲むことで、この中の処理がすべて case 1 用であることを明示
+            console.log("ステップ1に到達しました。翻訳を表示・読み上げします。"); // これを追加
+           　// if文を {} で囲むことで、この中の処理がすべて case 1 用であることを明示
             if (meaningDisplay) {
                 meaningDisplay.innerText = currentVocab.meaning;
                 
